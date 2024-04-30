@@ -1,45 +1,81 @@
+<script>
+    import AddTodo from '$root/components/AddTodo.svelte'
+    //state
+    let todos = [
+        { id: '1e4a59703af84', text: 'Todo 1', completed: true },
+        { id: '9e09bcd7b9349', text: 'Todo 2', completed: false },
+        { id: '9e4273a51a37c', text: 'Todo 3', completed: false },
+        { id: '53ae48bf605cc', text: 'Todo 4', completed: false },
+    ]
+
+    //debug
+    $: console.log(todos)
+
+    //computed values
+    $: todosAmount = todos.length
+
+    //methods
+    function generateRandomId() {
+        return Math.random().toString(16).slice(2)
+    }
+
+    function addTodo(todo) {
+        let newTodo = {
+            id: generateRandomId(),
+            text: todo,
+            completed: false,
+        }
+        todos = [...todos, newTodo]
+    }
+
+    function toggleCompleted(event) {
+        let { checked } = event.target
+        todos = todos.map((todo) => ({
+            ...todo,
+            completed: checked,
+        }))
+    }
+</script>
+
 <main>
     <h1 class="title">todos</h1>
     <section class="todos">
-        <form>
-            <input type="checkbox" id="toggle-all" class="toggle-all" />
-            <label aria-label="Mark all as complete" for="toggle-all">
-                Mark all as complete</label
-            >
-            <input
-                id="new-todo"
-                class="new-todo"
-                type="text"
-                placeholder="what needs to be done"
-                autofocus
-            />
-        </form>
-        <ul class="todo-list">
-            <li class="todo">
-                <div class="todo-item">
-                    <div>
-                        <input id="todo" class="toggle" type="checkbox" />
-                        <label
-                            aria-label="check todo"
-                            class="todo-check"
-                            for="todo"
-                        />
-                    </div>
-                    <span class="todo-text">Todo 1</span>
-                    <button aria-label="Remove todo" class="remove" />
+        <AddTodo {addTodo} {toggleCompleted} {todosAmount} />
+        {#if todosAmount}
+            <ul class="todo-list">
+                {#each todos as todo (todo.id)}
+                    <li class="todo">
+                        <div class="todo-item">
+                            <div>
+                                <input
+                                    checked={todo.completed}
+                                    id="todo"
+                                    class="toggle"
+                                    type="checkbox"
+                                />
+                                <label
+                                    aria-label="check todo"
+                                    class="todo-check"
+                                    for="todo"
+                                />
+                            </div>
+                            <span class="todo-text">{todo.text}</span>
+                            <button aria-label="Remove todo" class="remove" />
+                        </div>
+                        <!-- <input type="text" class="edit" autofocus> -->
+                    </li>
+                {/each}
+            </ul>
+            <div class="actions">
+                <span class="todo-count">0 left</span>
+                <div class="filters">
+                    <button class="filter">All</button>
+                    <button class="filter">Active</button>
+                    <button class="filter">Completed</button>
                 </div>
-                <!-- <input type="text" class="edit" autofocus> -->
-            </li>
-        </ul>
-        <div class="actions">
-            <span class="todo-count">0 left</span>
-            <div class="filters">
-                <button class="filter">All</button>
-                <button class="filter">Active</button>
-                <button class="filter">Completed</button>
+                <button class="clear-completed">Clear completed</button>
             </div>
-            <button class="clear-completed">Clear completed</button>
-        </div>
+        {/if}
     </section>
 </main>
 
@@ -94,42 +130,6 @@
             0 16px 0 -6px hsl(0, 0%, 96%),
             0 17px 2px -6px hsla(0, 0%, 0%, 0.2);
         z-index: -1;
-    }
-
-    /* Add todo */
-
-    .toggle-all {
-        width: 1px;
-        height: 1px;
-        position: absolute;
-        opacity: 0;
-    }
-
-    .toggle-all + label {
-        position: absolute;
-        font-size: 0;
-    }
-
-    .toggle-all + label:before {
-        content: '❯';
-        display: block;
-        padding: var(--spacing-16);
-        font-size: var(--font-24);
-        color: var(--color-gray-58);
-        transform: rotate(90deg);
-    }
-
-    .toggle-all:checked + label:before {
-        color: var(--color-gray-28);
-    }
-
-    .new-todo {
-        width: 100%;
-        padding: var(--spacing-16);
-        padding-left: 60px;
-        font-size: var(--font-24);
-        border: none;
-        border-bottom: 1px solid var(--shadow-1);
     }
 
     /* Todo */
