@@ -12,12 +12,14 @@ git clone https://github.com/JoysOfCode/svelte-todo.git
 
 Install dependencies
 
+Note : You need to have **pnpm** installed
+
 ```sh
-npm i
+pnpm i
 ```
 
 Start the project and open localhost
 
 ```sh
-npm run dev
+pnpm run dev
 ```
