@@ -5,6 +5,7 @@
     import FilterTodos from '$root/components/FilterTodos.svelte'
     import ClearTodos from '$root/components/ClearTodos.svelte'
     import { useStorage } from '$root/stores/useStorage'
+    import { tick } from 'svelte'
 
     //using stores
     let todos = useStorage('todos', [])
@@ -16,6 +17,7 @@
     // }
 
     let selectedFilter = 'all'
+    let filtering = false
     //debug
     $: console.log(todos)
 
@@ -24,6 +26,7 @@
     $: incompleteTodos = $todos.filter((todo) => !todo.completed).length
     $: filteredTodos = filterTodos($todos, selectedFilter)
     $: completedTodos = $todos.filter((todo) => todo.completed).length
+    $: duration = filtering ? 0 : 250
 
     //methods
     function generateRandomId() {
@@ -65,8 +68,12 @@
         $todos[currentTodo].text = newTodo
     }
 
-    function setFilter(newFilter) {
+    async function setFilter(newFilter) {
+        filtering = true
+        await tick()
         selectedFilter = newFilter
+        await tick()
+        filtering = false
     }
 
     function filterTodos(todos, filter) {
@@ -92,7 +99,13 @@
         {#if todosAmount}
             <ul class="todo-list">
                 {#each filteredTodos as todo (todo.id)}
-                    <Todo {todo} {completeTodo} {removeTodo} {editTodo} />
+                    <Todo
+                        {todo}
+                        {completeTodo}
+                        {removeTodo}
+                        {editTodo}
+                        {duration}
+                    />
                 {/each}
             </ul>
             <div class="actions">

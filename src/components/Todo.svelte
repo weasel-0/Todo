@@ -1,11 +1,11 @@
 <script>
-    import App from '$root/App.svelte'
-    import AddTodo from './AddTodo.svelte'
+    import { fade, slide } from 'svelte/transition'
 
     export let todo
     export let completeTodo
     export let removeTodo
     export let editTodo
+    export let duration
 
     let editing = false
 
@@ -41,7 +41,7 @@
 
 <!-- svelte-ignore a11y-autofocus -->
 
-<li class:editing class="todo">
+<li in:slide={{ duration }} out:fade={{ duration }} class:editing class="todo">
     <div class="todo-item">
         <div>
             <input
