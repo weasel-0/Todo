@@ -7,7 +7,7 @@ This is a simple todo application built with Svelte, created as a personal learn
 Clone the project
 
 ```sh
-git clone https://github.com/JoysOfCode/svelte-todo.git
+git clone https://github.com/weasel-0/Todo.git
 ```
 
 Install dependencies
