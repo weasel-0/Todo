@@ -1,10 +1,45 @@
 <script>
+    import App from '$root/App.svelte'
+    import AddTodo from './AddTodo.svelte'
+
     export let todo
     export let completeTodo
     export let removeTodo
+    export let editTodo
+
+    let editing = false
+
+    function toggleEdit() {
+        editing = true
+    }
+
+    function handleEdit(event, id) {
+        let pressedKey = event.key
+        let targetElement = event.target
+        let newTodo = targetElement.value
+
+        switch (pressedKey) {
+            case 'Escape':
+                targetElement.blur()
+                break
+            case 'Enter':
+                editTodo(id, newTodo)
+                targetElement.blur()
+                break
+        }
+    }
+
+    function handleBlur(event, id) {
+        let targetElement = event.target
+        let newTodo = targetElement.vlaue
+
+        editTodo(id, newTodo)
+        targetElement.blur()
+        editing = false
+    }
 </script>
 
-<li class="todo">
+<li class:editing class="todo">
     <div class="todo-item">
         <div>
             <input
@@ -16,7 +51,11 @@
             />
             <label aria-label="check todo" class="todo-check" for="todo" />
         </div>
-        <span class:completed={todo.completed} class="todo-text">
+        <span
+            on:dblclick={toggleEdit}
+            class:completed={todo.completed}
+            class="todo-text"
+        >
             {todo.text}
         </span>
         <button
@@ -25,7 +64,16 @@
             on:click={() => removeTodo(todo.id)}
         />
     </div>
-    <!-- <input type="text" class="edit" autofocus> -->
+    {#if editing}
+        <input
+            type="text"
+            class="edit"
+            value={todo.text}
+            on:keydown={(event) => handleEdit(event, todo.id)}
+            on:blur={(event) => handleBlur(event, todo.id)}
+            autofocus
+        />
+    {/if}
 </li>
 
 <style>
