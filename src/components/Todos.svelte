@@ -3,7 +3,8 @@
     import Todo from '$root/components/Todo.svelte'
     import TodosLeft from '$root/components/TodosLeft.svelte'
     import FilterTodos from '$root/components/FilterTodos.svelte'
-    import App from '$root/App.svelte'
+    import ClearTodos from '$root/components/ClearTodos.svelte'
+
     //state
     let todos = [
         { id: '1e4a59703af84', text: 'Todo 1', completed: true },
@@ -20,6 +21,7 @@
     $: todosAmount = todos.length
     $: incompleteTodos = todos.filter((todo) => !todo.completed).length
     $: filteredTodos = filterTodos(todos, selectedFilter)
+    $: completedTodos = todos.filter((todo) => todo.completed).length
 
     //methods
     function generateRandomId() {
@@ -75,6 +77,10 @@
                 return todos.filter((todo) => todo.completed)
         }
     }
+
+    function clearCompleted() {
+        todos = todos.filter((todo) => todo.completed !== true)
+    }
 </script>
 
 <main>
@@ -90,7 +96,7 @@
             <div class="actions">
                 <TodosLeft {incompleteTodos} />
                 <FilterTodos {selectedFilter} {setFilter} />
-                <button class="clear-completed">Clear completed</button>
+                <ClearTodos {clearCompleted} {completedTodos} />
             </div>
         {/if}
     </section>
