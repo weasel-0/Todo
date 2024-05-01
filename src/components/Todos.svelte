@@ -2,6 +2,8 @@
     import AddTodo from '$root/components/AddTodo.svelte'
     import Todo from '$root/components/Todo.svelte'
     import TodosLeft from '$root/components/TodosLeft.svelte'
+    import FilterTodos from '$root/components/FilterTodos.svelte'
+    import App from '$root/App.svelte'
     //state
     let todos = [
         { id: '1e4a59703af84', text: 'Todo 1', completed: true },
@@ -10,12 +12,14 @@
         { id: '53ae48bf605cc', text: 'Todo 4', completed: false },
     ]
 
+    let selectedFilter = 'all'
     //debug
     $: console.log(todos)
 
     //computed values
     $: todosAmount = todos.length
     $: incompleteTodos = todos.filter((todo) => !todo.completed).length
+    $: filteredTodos = filterTodos(todos, selectedFilter)
 
     //methods
     function generateRandomId() {
@@ -56,6 +60,21 @@
         let currentTodo = todos.findIndex((todo) => todo.id === id)
         todos[currentTodo].text = newTodo
     }
+
+    function setFilter(newFilter) {
+        selectedFilter = newFilter
+    }
+
+    function filterTodos(todos, filter) {
+        switch (filter) {
+            case 'all':
+                return todos
+            case 'active':
+                return todos.filter((todo) => !todo.completed)
+            case 'completed':
+                return todos.filter((todo) => todo.completed)
+        }
+    }
 </script>
 
 <main>
@@ -64,17 +83,13 @@
         <AddTodo {addTodo} {toggleCompleted} {todosAmount} />
         {#if todosAmount}
             <ul class="todo-list">
-                {#each todos as todo (todo.id)}
+                {#each filteredTodos as todo (todo.id)}
                     <Todo {todo} {completeTodo} {removeTodo} {editTodo} />
                 {/each}
             </ul>
             <div class="actions">
                 <TodosLeft {incompleteTodos} />
-                <div class="filters">
-                    <button class="filter">All</button>
-                    <button class="filter">Active</button>
-                    <button class="filter">Completed</button>
-                </div>
+                <FilterTodos {selectedFilter} {setFilter} />
                 <button class="clear-completed">Clear completed</button>
             </div>
         {/if}
@@ -132,27 +147,5 @@
             0 16px 0 -6px hsl(0, 0%, 96%),
             0 17px 2px -6px hsla(0, 0%, 0%, 0.2);
         z-index: -1;
-    }
-
-    /* Filters */
-
-    .filters {
-        display: flex;
-        gap: var(--spacing-4);
-    }
-
-    .filter {
-        text-transform: capitalize;
-        padding: var(--spacing-4) var(--spacing-8);
-        border: 1px solid transparent;
-        border-radius: var(--radius-base);
-    }
-
-    .filter:hover {
-        border: 1px solid var(--color-highlight);
-    }
-
-    .selected {
-        border-color: var(--color-highlight);
     }
 </style>
