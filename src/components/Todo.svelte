@@ -31,13 +31,15 @@
 
     function handleBlur(event, id) {
         let targetElement = event.target
-        let newTodo = targetElement.vlaue
+        let newTodo = targetElement.value
 
         editTodo(id, newTodo)
         targetElement.blur()
         editing = false
     }
 </script>
+
+<!-- svelte-ignore a11y-autofocus -->
 
 <li class:editing class="todo">
     <div class="todo-item">
@@ -51,10 +53,13 @@
             />
             <label aria-label="check todo" class="todo-check" for="todo" />
         </div>
+
         <span
             on:dblclick={toggleEdit}
             class:completed={todo.completed}
             class="todo-text"
+            tabindex="0"
+            role="button"
         >
             {todo.text}
         </span>
