@@ -12,14 +12,13 @@ git clone https://github.com/weasel-0/Todo.git
 
 Install dependencies
 
-Note : You need to have **pnpm** installed
 
 ```sh
-pnpm i
+npm i
 ```
 
 Start the project and open localhost
 
 ```sh
-pnpm run dev
+npm run dev
 ```
